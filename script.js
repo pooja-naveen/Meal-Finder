@@ -60,6 +60,19 @@ function getMealById(mealID) {
       addMealToDOM(meal);
     });
 }
+//fetch random meal from api
+function getRandomMeal() {
+  //clear meals and heading
+  mealsEl.innerHTML = "";
+  resultHeading.innerHTML = "";
+  fetch(`https://www.themealdb.com/api/json/v1/1/random.php`)
+    .then((res) => res.json())
+    .then((data) => {
+      const meal = data.meals[0];
+      addMealToDOM(meal);
+    });
+}
+
 //add meal to dom
 function addMealToDOM(meal) {
   const ingredients = [];
@@ -84,19 +97,21 @@ function addMealToDOM(meal) {
   <p> ${meal.strInstructions}</p>
   <h2>Ingredients</h2>
   <ul>
-  ${ingredients.map(ing =>`<li>${ing}</li>`).join('')}
+  ${ingredients.map((ing) => `<li>${ing}</li>`).join("")}
   </ul>
   </div>
   </div>
   `;
 }
 
-//event listneres
+//event listeneres
 submit.addEventListener("submit", searchMeal);
+random.addEventListener("click", getRandomMeal);
 
-mealsEl.addEventListener('click', (e) => {
-  const mealInfo = e.Path.find((item) => {
-    //console.log(item);
+mealsEl.addEventListener("click", (e) => {
+  const path = e.path || (e.composedPath && e.composedPath());//it helps to work in firefox and (e.path is undefined error) is solved
+  const mealInfo = path.find((item) => {
+    console.log(item);
     if (item.classList) {
       return item.classList.contains("meal-info");
     } else {
